@@ -1,54 +1,73 @@
-# C++ objects and libs
+# --- Pliki binarne i obiektowe ---
+*.d
 *.slo
 *.lo
 *.o
-*.a
-*.la
-*.lai
+*.obj
+*.gch
+*.pch
+*.ilk
+*.pdb
 *.so
-*.so.*
-*.dll
 *.dylib
+*.dll
+*.mod
+*.smod
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+*.dwo
 
-# Qt-es
-object_script.*.Release
-object_script.*.Debug
-*_plugin_import.cpp
-/.qmake.cache
-/.qmake.stash
+# --- Visual Studio  ---
+.vs/
+*.vsidx
+*.suo
+*.db
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.filters
+*.user
+
+x64/
+Debug/
+Release/
+
+# --- Qt Creator 
 *.pro.user
 *.pro.user.*
-*.qbs.user
-*.qbs.user.*
-*.moc
-moc_*.cpp
-moc_*.h
-qrc_*.cpp
-ui_*.h
-*.qmlc
-*.jsc
-Makefile*
-*build-*
-*.qm
-*.prl
-
-# Qt unit tests
-target_wrapper.*
-
-# QtCreator
+CMakeLists.txt.user
 *.autosave
 
-# QtCreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
+# --- Qt Generated Files 
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+.qmlc
+.jsc
+Makefile*
+*build-*
 
-# QtCreator CMake
-CMakeLists.txt.user*
+# QMake garbage
+Makefile*
+*.qmake.stash
+*.pro.user
+*.pro.user.*
+object_script.*
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+.qmlc
+.jsc
+build/
+debug/
+release/
 
-# QtCreator 4.8< compilation database
-compile_commands.json
-
-# QtCreator local machine specific files for imported projects
-*creator.user*
-
-*_qmlcache.qrc
+# --- Foldery budowania 
+build/
+/build-*/
+ui/mainwindow_kopia.ui
