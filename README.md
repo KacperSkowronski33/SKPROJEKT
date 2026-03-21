@@ -1,0 +1,2 @@
+# SKPROJEKT
+Kontynuacja projektu pk
