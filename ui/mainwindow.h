@@ -31,6 +31,8 @@ private slots:
     void aktualizujSymulacje();
     void on_parametryChanged();
 
+    void on_actionUstawienia_triggered();
+
 private:
     Ui::MainWindow *ui;
 

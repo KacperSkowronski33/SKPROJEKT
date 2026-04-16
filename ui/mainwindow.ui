@@ -26,6 +26,30 @@ QMainWindow, QWidget#centralWidget {
     color: #f0f0f0;
 }
 
+/* --- PASEK STANU (QStatusBar) --- */
+QMenuBar {
+    background-color: #202020;
+    border: none;
+}
+
+/* --- 2. STYLIZACJA SAMEGO PRZYCISKU (QAction) --- */
+QMenuBar#menuBar::item {
+    background-color: #1976d2; /* Niebieski akcent */
+    color: white;
+    padding: 6px 12px;
+    margin: 2px 4px; 
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+QMenuBar#menuBar::item:selected {
+    background-color: #2196f3; 
+}
+
+QMenuBar#menuBar::item:pressed {
+    background-color: #0d47a1;
+}
+
 /* --- LEWY PANEL (Kontenery) --- */
 QGroupBox {
     background-color: #333333;
@@ -676,7 +700,29 @@ QCustomPlot {
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1300</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTryb_sieciowy">
+    <property name="title">
+     <string>Tryb sieciowy</string>
+    </property>
+    <addaction name="actionUstawienia"/>
+   </widget>
+   <addaction name="menuTryb_sieciowy"/>
+  </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionUstawienia">
+   <property name="text">
+    <string>Ustawienia</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

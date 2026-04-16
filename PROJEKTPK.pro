@@ -23,7 +23,8 @@ SOURCES += \
     ui/qcustomplot.cpp \
     main.cpp \
     ui/mainwindow.cpp \
-    ui/ustawieniaarx.cpp
+    ui/ustawieniaarx.cpp \
+    service/ustawieniasieci.cpp
 
 HEADERS += \
     backend/ARX.h \
@@ -34,8 +35,10 @@ HEADERS += \
     service/WarstwaU.h \
     ui/qcustomplot.h \
     ui/mainwindow.h \
-    ui/ustawieniaarx.h
+    ui/ustawieniaarx.h \
+    service/ustawieniasieci.h
 
 FORMS += \
     ui/mainwindow.ui \
-    ui/ustawieniaarx.ui
+    ui/ustawieniaarx.ui \
+    ui/ustawieniasieci.ui

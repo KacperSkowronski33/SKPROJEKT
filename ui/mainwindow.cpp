@@ -11,6 +11,7 @@
 #include <QJsonArray>
 #include <QFile>
 #include <qdebug>
+#include "ustawieniasieci.h"
 
 using namespace std;
 
@@ -465,3 +466,10 @@ void MainWindow::on_parametryChanged()
 
     ui->statusbar->showMessage("Parametry zaktualizowane!", 2000);
 }
+
+void MainWindow::on_actionUstawienia_triggered()
+{
+    UstawieniaSieci *oknoSiec = new UstawieniaSieci(this);
+    oknoSiec->exec();
+}
+

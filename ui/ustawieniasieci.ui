@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UstawieniaSieci</class>
+ <widget class="QDialog" name="UstawieniaSieci">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>660</width>
+    <height>268</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* --- GŁÓWNE TŁO --- */
+QDialog {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+}
+
+/* --- KONTENERY (Grupy) --- */
+QGroupBox {
+    background-color: #333333;
+    border: 1px solid #555555;
+    border-radius: 6px;
+    margin-top: 22px; 
+    font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0 5px;
+    color: #4da6ff; 
+    background-color: transparent;
+}
+
+/* --- ETYKIETY I OPCJE (Radio) --- */
+QLabel {
+    color: #dddddd;
+    background-color: transparent; 
+    border: none;
+}
+
+/* --- QRadioButton - Tekst --- */
+QRadioButton {
+    color: #dddddd;
+    background-color: transparent;
+}
+
+/* --- QRadioButton - Kółeczko (Niezaznaczone) --- */
+QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px; /* połowa szerokości/wysokości = idealne koło */
+    border: 2px solid #666666;
+    background-color: #454545;
+}
+
+/* --- QRadioButton - Kółeczko po najechaniu myszką --- */
+QRadioButton::indicator:hover {
+    border: 2px solid #4da6ff;
+}
+
+/* --- QRadioButton - Kółeczko (Zaznaczone) --- */
+QRadioButton::indicator:checked {
+    background-color: #4da6ff;
+    border: 2px solid #dddddd;
+}
+
+/* --- POLA WPISYWANIA (IP i Port) --- */
+QLineEdit, QSpinBox {
+    background-color: #454545;
+    border: 1px solid #666666;
+    border-radius: 3px;
+    padding: 4px;
+    color: #ffffff;
+    selection-background-color: #4da6ff;
+}
+
+QLineEdit:hover, QSpinBox:hover {
+    border: 1px solid #4da6ff;
+}
+
+/* --- PRZYCISKI --- */
+QPushButton {
+    background-color: #404040;
+    border: 1px solid #555555;
+    border-radius: 4px;
+    color: white;
+    padding: 6px 12px;
+    min-height: 25px;
+}
+
+QPushButton:hover {
+    background-color: #505050;
+    border: 1px solid #4da6ff;
+}
+
+QPushButton:pressed {
+    background-color: #2a2a2a;
+}
+
+/* --- PRZYCISK POŁĄCZ (Niebieski Akcent) --- */
+
+QPushButton#btnPolacz {
+    background-color: #1976d2; 
+    border-color: #2196f3;
+    font-weight: bold;
+}
+
+QPushButton#btnPolacz:hover { 
+    background-color: #2196f3; 
+    border-color: #4da6ff;
+}
+
+QPushButton#btnPolacz:pressed {
+    background-color: #0d47a1;
+}</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Ustawienia pracy w trybie sieciowym</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="tryb_layout">
+         <item>
+          <widget class="QRadioButton" name="radioLokalny">
+           <property name="text">
+            <string>Tryb lokalny</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioSieciowy">
+           <property name="text">
+            <string>Tryb sieciowy</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <layout class="QHBoxLayout" name="port_layout">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Port: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPlainTextEdit" name="plainTextEdit">
+               <property name="maximumSize">
+                <size>
+                 <width>65</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="serwerKlient_layout">
+               <item>
+                <widget class="QRadioButton" name="radioSerwer">
+                 <property name="text">
+                  <string>Serwer</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_2</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioKlient">
+                 <property name="text">
+                  <string>Klient</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_2</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="trybPracy_layout">
+               <item>
+                <widget class="QRadioButton" name="radioRegulator">
+                 <property name="text">
+                  <string>Regulator</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_3</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioObiekt">
+                 <property name="text">
+                  <string>Obiekt </string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_3</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QWidget" name="kontenerIP" native="true">
+       <layout class="QHBoxLayout" name="ip_layout">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>IP:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPlainTextEdit" name="plainTextEdit_2">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="plainTextEdit_3">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="plainTextEdit_4">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="plainTextEdit_5">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btnPolacz">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>39</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Połącz</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRozlacz">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>39</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Rozłącz</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="stanPolaczenia">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Brak połączenia</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnZatwierdz">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>39</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Zatwierdź</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnAnuluj">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>39</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Anuluj</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_3"/>
+ </buttongroups>
+</ui>
