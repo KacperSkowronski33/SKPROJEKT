@@ -5,13 +5,13 @@
 WarstwaU::WarstwaU(QObject *parent) : QObject(parent)
 {
     // Inicjalizacja obiektów logicznych
-    std::vector<double> A = {-0.4, 0.1, -0.05};
-    std::vector<double> B = {0.6, 0.2, 0.1};
+    std::vector<double> A = {-0.4, 0.0, 0.00};
+    std::vector<double> B = {0.6, 0.0, 0.0};
     int k = 1;
 
     ARX model(A, B, k);
     PID regulator(1.0, 50.0, 0.1);
-    GeneratorWartosciZadanej gen(1.0, 10.0, 0.0, 0.5, 200, TypSygnalu::SygnalProstokatny);
+    GeneratorWartosciZadanej gen(1.0, 10.0, 0.0, 0.5, 50, TypSygnalu::SygnalProstokatny);
 
     symulator = new UAR(model, regulator, gen);
 
