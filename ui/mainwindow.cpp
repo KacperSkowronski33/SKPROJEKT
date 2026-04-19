@@ -76,6 +76,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 5. Pierwsza synchronizacja parametrów z UI do logiki
     on_parametryChanged();
+
+    m_ostatniPort = 00000;
+    m_czyOstatniTrybLokalny = true;
+    m_czyOstatniSerwer = false;
+    m_czyOstatniObiekt = false;
 }
 
 MainWindow::~MainWindow()
@@ -469,7 +474,21 @@ void MainWindow::on_parametryChanged()
 
 void MainWindow::on_actionUstawienia_triggered()
 {
-    UstawieniaSieci *oknoSiec = new UstawieniaSieci(this);
-    oknoSiec->exec();
+    UstawieniaSieci oknoSiec(this);
+    oknoSiec.setIP(m_ostatnieIP);
+    oknoSiec.setPort(m_ostatniPort);
+    oknoSiec.setCzyLokalny(m_czyOstatniTrybLokalny);
+    oknoSiec.setCzyObiekt(m_czyOstatniObiekt);
+    oknoSiec.setCzySerwer(m_czyOstatniSerwer);
+
+    if(oknoSiec.exec() == QDialog::Accepted) {
+        m_ostatnieIP = oknoSiec.getIP();
+        m_ostatniPort = oknoSiec.getPort();
+        m_czyOstatniSerwer = oknoSiec.getCzySerwer();
+        m_czyOstatniObiekt = oknoSiec.getCzyObiekt();
+        m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
+
+        warstwaUslug->wlaczTrybSieciowy(m_czyOstatniSerwer, m_ostatniPort, m_ostatnieIP);
+    }
 }
 

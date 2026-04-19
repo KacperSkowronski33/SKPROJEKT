@@ -194,7 +194,7 @@ QPushButton#btnPolacz:pressed {
               </widget>
              </item>
              <item>
-              <widget class="QPlainTextEdit" name="plainTextEdit">
+              <widget class="QPlainTextEdit" name="polePort">
                <property name="maximumSize">
                 <size>
                  <width>65</width>
@@ -298,7 +298,7 @@ QPushButton#btnPolacz:pressed {
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_2">
+           <widget class="QPlainTextEdit" name="poleIP1">
             <property name="maximumSize">
              <size>
               <width>50</width>
@@ -308,7 +308,7 @@ QPushButton#btnPolacz:pressed {
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_3">
+           <widget class="QPlainTextEdit" name="poleIP2">
             <property name="maximumSize">
              <size>
               <width>50</width>
@@ -318,7 +318,7 @@ QPushButton#btnPolacz:pressed {
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_4">
+           <widget class="QPlainTextEdit" name="poleIP3">
             <property name="maximumSize">
              <size>
               <width>50</width>
@@ -328,7 +328,7 @@ QPushButton#btnPolacz:pressed {
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_5">
+           <widget class="QPlainTextEdit" name="poleIP4">
             <property name="maximumSize">
              <size>
               <width>50</width>
@@ -377,6 +377,13 @@ QPushButton#btnPolacz:pressed {
             </property>
             <property name="text">
              <string>Rozłącz</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnTest">
+            <property name="text">
+             <string>Test</string>
             </property>
            </widget>
           </item>
@@ -455,8 +462,8 @@ QPushButton#btnPolacz:pressed {
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>

@@ -17,14 +17,91 @@ UstawieniaSieci::~UstawieniaSieci()
     delete ui;
 }
 
+QString UstawieniaSieci::getIP() const
+{
+    return ui->poleIP1->toPlainText().trimmed() + "." +
+            ui->poleIP2->toPlainText().trimmed() + "." +
+            ui->poleIP3->toPlainText().trimmed() + "." +
+           ui->poleIP4->toPlainText().trimmed();
+}
+
+int UstawieniaSieci::getPort() const
+{
+    return ui->polePort->toPlainText().trimmed().toInt();
+}
+
+bool UstawieniaSieci::getCzyLokalny() const
+{
+    return ui->radioLokalny->isChecked();
+}
+
+bool UstawieniaSieci::getCzySerwer() const
+{
+    return ui->radioSerwer->isChecked();
+}
+
+bool UstawieniaSieci::getCzyObiekt() const
+{
+    return ui->radioObiekt->isChecked();
+}
+
+void UstawieniaSieci::setIP(const QString &adres)
+{
+    QStringList adr = adres.split(".");
+    if(adr.size() == 4) {
+        ui->poleIP1->setPlainText(adr[0]);
+        ui->poleIP2->setPlainText(adr[1]);
+        ui->poleIP3->setPlainText(adr[2]);
+        ui->poleIP4->setPlainText(adr[3]);
+    } else {
+        ui->poleIP1->setPlainText("127");
+        ui->poleIP2->setPlainText("0");
+        ui->poleIP3->setPlainText("0");
+        ui->poleIP4->setPlainText("1");
+    }
+}
+
+void UstawieniaSieci::setPort(int port)
+{
+    ui->polePort->setPlainText(QString::number(port));
+}
+
+void UstawieniaSieci::setCzyLokalny(bool czyLok)
+{
+    if(czyLok) {
+        ui->radioLokalny->setChecked(true);
+    } else {
+        ui->radioSieciowy->setChecked(true);
+    }
+}
+
+void UstawieniaSieci::setCzySerwer(bool czySer)
+{
+    if(czySer) {
+        ui->radioSerwer->setChecked(true);
+    } else
+    {
+        ui->radioKlient->setChecked(true);
+    }
+}
+
+void UstawieniaSieci::setCzyObiekt(bool czyObi)
+{
+    if(czyObi) {
+        ui->radioObiekt->setChecked(true);
+    } else {
+        ui->radioRegulator->setChecked(true);
+    }
+}
+
 void UstawieniaSieci::on_btnZatwierdz_clicked()
 {
-    this->close();
+    this->accept();
 }
 
 
 void UstawieniaSieci::on_btnAnuluj_clicked()
 {
-
+    this->reject();
 }
 
