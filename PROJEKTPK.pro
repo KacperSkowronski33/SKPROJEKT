@@ -17,6 +17,7 @@ SOURCES += \
     backend/ARX.cpp \
     backend/GWZ.cpp \
     backend/PID.cpp \
+    service/interfejssieciowy.cpp \
     tests/TestyJednostkowe.cpp \
     backend/UAR.cpp \
     service/WarstwaU.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     backend/ARX.h \
     backend/GWZ.h \
     backend/PID.h \
+    service/interfejssieciowy.h \
     tests/TestyJednostkowe.h \
     backend/UAR.h \
     service/WarstwaU.h \
