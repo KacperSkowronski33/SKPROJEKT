@@ -82,6 +82,7 @@ void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
     } else m_siec = new TCPKlient(this);
 
     connect(m_siec, &InterfejsSieciowy::polaczono, this, [=](){
+        emit infoPolaczono();
         qDebug() << "polaczono";
     });
     connect(m_siec, &InterfejsSieciowy::rozlaczono, this, [=](){

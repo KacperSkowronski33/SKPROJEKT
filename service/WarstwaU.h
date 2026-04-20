@@ -34,6 +34,7 @@ public:
 
 signals:
     void zadanieOdswiezenia();
+    void infoPolaczono();
 
 public:
 

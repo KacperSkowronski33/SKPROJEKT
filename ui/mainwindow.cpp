@@ -481,6 +481,14 @@ void MainWindow::on_actionUstawienia_triggered()
     oknoSiec.setCzyObiekt(m_czyOstatniObiekt);
     oknoSiec.setCzySerwer(m_czyOstatniSerwer);
 
+    connect(&oknoSiec, &UstawieniaSieci::sygnalPolacz, this, [=](bool serwer, int port, QString adres) {
+        warstwaUslug->wlaczTrybSieciowy(serwer, port, adres);
+    });
+
+    connect(warstwaUslug, &WarstwaU::infoPolaczono, &oknoSiec, [&oknoSiec](){
+        oknoSiec.statusPolaczono(oknoSiec.getIP());
+    });
+
     if(oknoSiec.exec() == QDialog::Accepted) {
         m_ostatnieIP = oknoSiec.getIP();
         m_ostatniPort = oknoSiec.getPort();

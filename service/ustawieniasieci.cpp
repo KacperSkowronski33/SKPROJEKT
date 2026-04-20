@@ -10,6 +10,13 @@ UstawieniaSieci::UstawieniaSieci(QWidget *parent)
     connect(ui->radioSerwer, &QRadioButton::toggled, this, [=](bool serwer) {
         ui->kontenerIP->setVisible(!serwer);
     });
+
+    connect(ui->btnPolacz, &QPushButton::clicked, this, [=](){
+        bool serwer = this->getCzySerwer();
+        QString adres = "";
+        if(!serwer) adres = this->getIP();
+        emit sygnalPolacz(serwer, this->getPort(), adres);
+    });
 }
 
 UstawieniaSieci::~UstawieniaSieci()
@@ -94,8 +101,14 @@ void UstawieniaSieci::setCzyObiekt(bool czyObi)
     }
 }
 
+void UstawieniaSieci::statusPolaczono(const QString &adresip)
+{
+    ui->stanPolaczenia->setText("Połączono z " + adresip);
+}
+
 void UstawieniaSieci::on_btnZatwierdz_clicked()
 {
+
     this->accept();
 }
 
@@ -103,5 +116,11 @@ void UstawieniaSieci::on_btnZatwierdz_clicked()
 void UstawieniaSieci::on_btnAnuluj_clicked()
 {
     this->reject();
+}
+
+
+void UstawieniaSieci::on_btnRozlacz_clicked()
+{
+    ui->stanPolaczenia->setText("Rozłączono");
 }
 

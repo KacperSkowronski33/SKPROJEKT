@@ -219,6 +219,19 @@ QPushButton#btnPolacz:pressed {
                </property>
               </spacer>
              </item>
+             <item>
+              <widget class="QPushButton" name="btnPolacz">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>39</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Połącz</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item>
@@ -355,19 +368,6 @@ QPushButton#btnPolacz:pressed {
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="btnPolacz">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>39</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Połącz</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QPushButton" name="btnRozlacz">
             <property name="minimumSize">
              <size>
@@ -462,8 +462,8 @@ QPushButton#btnPolacz:pressed {
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>

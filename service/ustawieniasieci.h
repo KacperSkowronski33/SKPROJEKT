@@ -27,10 +27,17 @@ public:
     void setCzySerwer(bool czySer);
     void setCzyObiekt(bool czyObi);
 
+    void statusPolaczono(const QString &adresip);
+
 private slots:
     void on_btnZatwierdz_clicked();
-
     void on_btnAnuluj_clicked();
+
+
+    void on_btnRozlacz_clicked();
+
+signals:
+    void sygnalPolacz(bool czySerwer, int port, QString adres);
 
 private:
     Ui::UstawieniaSieci *ui;
