@@ -8,6 +8,7 @@ WarstwaU::WarstwaU(QObject *parent) : QObject(parent)
 {
     //siec
     m_siec = nullptr;
+    connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, &WarstwaU::on_daneOdebrane);
 
     // Inicjalizacja obiektów logicznych
     std::vector<double> A = {-0.4, 0.0, 0.00};
@@ -93,6 +94,24 @@ void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
     });
 
     m_siec->polacz(adres, port);
+}
+
+void WarstwaU::wyslijRamke(const Ramka &ramka)
+{
+    if(!m_siec) return;
+    QByteArray dane;
+    QDataStream out(&dane, QIODevice::WriteOnly);
+    out << ramka;
+    m_siec->wyslijDane(dane);
+}
+
+
+void WarstwaU::on_daneOdebrane(const QByteArray &dane)
+{
+    QDataStream in(dane);
+    Ramka odebranaRamka;
+    in >> odebranaRamka;
+    emit ramkaOdebrana(odebranaRamka);
 }
 
 

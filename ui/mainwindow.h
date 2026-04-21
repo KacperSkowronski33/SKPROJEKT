@@ -32,6 +32,7 @@ private slots:
     void on_parametryChanged();
 
     void on_actionUstawienia_triggered();
+    void on_odebranaRamka(const Ramka &ramka);
 
 private:
     Ui::MainWindow *ui;
