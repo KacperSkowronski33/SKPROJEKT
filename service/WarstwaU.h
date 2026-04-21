@@ -18,7 +18,7 @@ private:
     UAR *symulator;
     QTimer *zegarSymulacji;
     InterfejsSieciowy *m_siec;
-    //QByteArray m_buforSieciowy;
+    QByteArray m_buforSieciowy;
 
 
 

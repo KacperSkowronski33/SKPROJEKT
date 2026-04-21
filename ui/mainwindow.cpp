@@ -534,7 +534,7 @@ void MainWindow::on_actionUstawienia_triggered()
         m_czyOstatniObiekt = oknoSiec.getCzyObiekt();
         m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
 
-        warstwaUslug->wlaczTrybSieciowy(m_czyOstatniSerwer, m_ostatniPort, m_ostatnieIP);
+        //warstwaUslug->wlaczTrybSieciowy(m_czyOstatniSerwer, m_ostatniPort, m_ostatnieIP);
     }
 }
 

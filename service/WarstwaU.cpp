@@ -8,7 +8,7 @@ WarstwaU::WarstwaU(QObject *parent) : QObject(parent)
 {
     //siec
     m_siec = nullptr;
-    connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, &WarstwaU::on_daneOdebrane);
+    //connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, &WarstwaU::on_daneOdebrane);
 
     // Inicjalizacja obiektów logicznych
     std::vector<double> A = {-0.4, 0.0, 0.00};
@@ -77,10 +77,13 @@ void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
         m_siec->deleteLater();
         m_siec = nullptr;
     }
+    m_buforSieciowy.clear();
 
     if(serwer) {
         m_siec = new TCPSerwer(this);
     } else m_siec = new TCPKlient(this);
+
+    connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, &WarstwaU::on_daneOdebrane);
 
     connect(m_siec, &InterfejsSieciowy::polaczono, this, [=](){
         emit infoPolaczono();
@@ -108,10 +111,20 @@ void WarstwaU::wyslijRamke(const Ramka &ramka)
 
 void WarstwaU::on_daneOdebrane(const QByteArray &dane)
 {
-    QDataStream in(dane);
-    Ramka odebranaRamka;
-    in >> odebranaRamka;
-    emit ramkaOdebrana(odebranaRamka);
+    m_buforSieciowy.append(dane);
+    QDataStream in(&m_buforSieciowy, QIODevice::ReadOnly);
+    while (!in.atEnd()) {
+        in.startTransaction();
+
+        Ramka odebranaRamka;
+        in >> odebranaRamka;
+
+        if (in.commitTransaction()) {
+            emit ramkaOdebrana(odebranaRamka);
+        } else break;
+
+    }
+    m_buforSieciowy.remove(0, in.device()->pos());
 }
 
 
