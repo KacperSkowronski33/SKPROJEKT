@@ -18,6 +18,7 @@ SOURCES += \
     backend/GWZ.cpp \
     backend/PID.cpp \
     service/interfejssieciowy.cpp \
+    service/ramka.cpp \
     service/tcpklient.cpp \
     service/tcpserwer.cpp \
     tests/TestyJednostkowe.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     backend/GWZ.h \
     backend/PID.h \
     service/interfejssieciowy.h \
+    service/ramka.h \
     service/tcpklient.h \
     service/tcpserwer.h \
     tests/TestyJednostkowe.h \

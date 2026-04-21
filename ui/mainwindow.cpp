@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_czyOstatniTrybLokalny = true;
     m_czyOstatniSerwer = false;
     m_czyOstatniObiekt = false;
+    connect(warstwaUslug, &WarstwaU::ramkaOdebrana, this, &MainWindow::on_odebranaRamka);
 }
 
 MainWindow::~MainWindow()
@@ -247,6 +248,21 @@ void MainWindow::on_btnUstawieniaARX_clicked()
         warstwaUslug->setArxInputLimit(okno.getUmin(), okno.getUmax());
         warstwaUslug->setArxOutputLimit(okno.getYmin(), okno.getYmax());
         warstwaUslug->toggleArxLimits(okno.getLimityAktywne());
+
+        Ramka rARX;
+        rARX.typ = TypRamki::ParametryARX;
+        rARX.wekA = okno.getA();
+        rARX.wekB = okno.getB();
+        rARX.opoznienie = okno.getK();
+        rARX.ampSzum = okno.getSzumAmp();
+        rARX.czySzum = okno.getSzumAktywny();
+        rARX.umin = uMin;
+        rARX.umax = uMax;
+        rARX.ymin = okno.getYmin();
+        rARX.ymax = okno.getYmax();
+        rARX.czyLim = okno.getLimityAktywne();
+
+        warstwaUslug->wyslijRamke(rARX);
     }
 }
 
@@ -482,6 +498,22 @@ void MainWindow::on_parametryChanged()
     warstwaUslug->setInterwalSymulacji(ui->spinInterwal->value());
 
     ui->statusbar->showMessage("Parametry zaktualizowane!", 2000);
+
+    Ramka rPID;
+    rPID.typ = TypRamki::ParametryPID;
+    rPID.kp = ui->spinKp->value();
+    rPID.ti = ui->spinTi->value();
+    rPID.td = ui->spinTd->value();
+    rPID.typCalki = (ui->boxRozniczka->currentIndex() == 0) ? PID::trybCalki::wew : PID::trybCalki::zew;
+    warstwaUslug->wyslijRamke(rPID);
+
+    Ramka rGWZ;
+    rGWZ.typ = TypRamki::ParametryGWZ;
+    rGWZ.amplituda = ui->spinAmp->value();
+    rGWZ.okres = ui->spinOkres->value();
+    rGWZ.wypelnienie = ui->spinWypelnienie->value();
+    rGWZ.typSyg = (ui->comboTyp->currentIndex() == 0) ? TypSygnalu::SygnalProstokatny : TypSygnalu::Sinusoida;
+    warstwaUslug->wyslijRamke(rGWZ);
 }
 
 void MainWindow::on_actionUstawienia_triggered()
@@ -508,19 +540,14 @@ void MainWindow::on_actionUstawienia_triggered()
         m_czyOstatniObiekt = oknoSiec.getCzyObiekt();
         m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
 
-        warstwaUslug->wlaczTrybSieciowy(m_czyOstatniSerwer, m_ostatniPort, m_ostatnieIP);
         ustawBlokadySymulacji(m_czyOstatniObiekt);
     }
 }
 
 void MainWindow::ustawBlokadySymulacji(bool czyObiekt)
-
 {
-
     if(m_czyOstatniObiekt && !m_czyOstatniTrybLokalny)
-
     {
-
         ui->groupBox->setEnabled(false);
         ui->groupBox_2->setEnabled(false);
         ui->groupBox_3->setEnabled(false);
@@ -528,12 +555,58 @@ void MainWindow::ustawBlokadySymulacji(bool czyObiekt)
         ui->groupBox->setEnabled(true);
         ui->groupBox_2->setEnabled(true);
         ui->groupBox_3->setEnabled(true);
-
     }
-
-
-
-
-
 }
 
+void MainWindow::on_odebranaRamka(const Ramka &ramka)
+{
+    switch(ramka.typ) {
+    case TypRamki::DaneSymulacji:
+
+        //na te spotkanie nie musi byc
+        break;
+
+    case TypRamki::ParametryARX:
+
+        warstwaUslug->setArxA(ramka.wekA);
+        warstwaUslug->setArxB(ramka.wekB);
+        warstwaUslug->setArxDelay(ramka.opoznienie);
+        warstwaUslug->setArxNoiseAmplitude(ramka.ampSzum);
+        warstwaUslug->toggleArxNoise(ramka.czySzum);
+        warstwaUslug->setArxInputLimit(ramka.umin, ramka.umax);
+        warstwaUslug->setArxOutputLimit(ramka.ymin, ramka.ymax);
+        warstwaUslug->toggleArxLimits(ramka.czyLim);
+
+        break;
+
+    case TypRamki::ParametryPID:
+
+        warstwaUslug->setPidK(ramka.kp);
+        warstwaUslug->setPidTI(ramka.ti);
+        warstwaUslug->setPidTD(ramka.td);
+        warstwaUslug->setPidMode(ramka.typCalki);
+
+        ui->spinKp->setValue(ramka.kp);
+        ui->spinTi->setValue(ramka.ti);
+        ui->spinTd->setValue(ramka.td);
+
+        if (ramka.typCalki == PID::trybCalki::wew) {
+            ui->boxRozniczka->setCurrentIndex(0);
+        } else {
+            ui->boxRozniczka->setCurrentIndex(1);
+        }
+
+        break;
+
+    case TypRamki::ParametryGWZ:
+        warstwaUslug->setGwzAmplitude(ramka.amplituda);
+        warstwaUslug->setGwzPeriod(ramka.okres);
+        warstwaUslug->setGwzWypelnienie(ramka.wypelnienie);
+        warstwaUslug->setGwzType(ramka.typSyg);
+        ui->spinAmp->setValue(ramka.amplituda);
+        ui->spinOkres->setValue(ramka.okres);
+        ui->spinWypelnienie->setValue(ramka.wypelnienie);
+
+        break;
+    };
+}
