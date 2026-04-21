@@ -7,6 +7,7 @@
 #include "PID.h"
 #include "UAR.h"
 #include "interfejssieciowy.h"
+#include "ramka.h"
 
 
 class WarstwaU : public QObject
@@ -17,6 +18,9 @@ private:
     UAR *symulator;
     QTimer *zegarSymulacji;
     InterfejsSieciowy *m_siec;
+    //QByteArray m_buforSieciowy;
+
+
 
 public:
     explicit WarstwaU(QObject *parent = nullptr);
@@ -31,10 +35,16 @@ public:
 
     //siec
     void wlaczTrybSieciowy(bool serwer, int port ,const QString &adres = "127.0.0.1");
+    void wyslijRamke(const Ramka &ramka);
+
 
 signals:
     void zadanieOdswiezenia();
     void infoPolaczono();
+    void ramkaOdebrana(const Ramka &ramka);
+
+private slots:
+    void on_daneOdebrane(const QByteArray &dane);
 
 public:
 
