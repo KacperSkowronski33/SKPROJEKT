@@ -295,6 +295,7 @@ void MainWindow::on_btnZapisz_clicked()
 
     // --- 4. POZOSTAŁE ---
     root["Interwal"] = ui->spinInterwal->value();
+    root["Skalowanie okna"] = ui->spinOkno->value(); //dodane zapisywanie
 
     QFile file(nazwaPliku);
     if (!file.open(QIODevice::WriteOnly)) {
@@ -390,6 +391,11 @@ void MainWindow::on_btnWczytaj_clicked()
         warstwaUslug->setGwzTT(ui->spinInterwal->value());
     }
 
+    if (root.contains("Skalowanie okna")) {
+        ui->spinOkno->setValue(root["Skalowanie okna"].toInt()); //dodane wczytywanie skalowania okna
+    }
+
+    on_parametryChanged();          //żeby odczyt działał prawidłowo
     on_btnReset_clicked();
     aktualizujSymulacje();
     QMessageBox::information(this, "Sukces", "Wczytano pełną konfigurację.");
