@@ -6,6 +6,8 @@
 #include "GWZ.h"
 #include "PID.h"
 #include "UAR.h"
+#include "interfejssieciowy.h"
+
 
 class WarstwaU : public QObject
 {
@@ -14,6 +16,7 @@ class WarstwaU : public QObject
 private:
     UAR *symulator;
     QTimer *zegarSymulacji;
+    InterfejsSieciowy *m_siec;
 
 public:
     explicit WarstwaU(QObject *parent = nullptr);
@@ -26,8 +29,12 @@ public:
     bool czySymulacjaDziala() const;
     double getInterwalSekundy() const;
 
+    //siec
+    void wlaczTrybSieciowy(bool serwer, int port ,const QString &adres = "127.0.0.1");
+
 signals:
     void zadanieOdswiezenia();
+    void infoPolaczono();
 
 public:
 

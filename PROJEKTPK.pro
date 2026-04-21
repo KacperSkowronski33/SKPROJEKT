@@ -1,5 +1,5 @@
 QT       += core gui
-QT       += printsupport
+QT       += printsupport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,25 +17,34 @@ SOURCES += \
     backend/ARX.cpp \
     backend/GWZ.cpp \
     backend/PID.cpp \
+    service/interfejssieciowy.cpp \
+    service/tcpklient.cpp \
+    service/tcpserwer.cpp \
     tests/TestyJednostkowe.cpp \
     backend/UAR.cpp \
     service/WarstwaU.cpp \
     ui/qcustomplot.cpp \
     main.cpp \
     ui/mainwindow.cpp \
-    ui/ustawieniaarx.cpp
+    ui/ustawieniaarx.cpp \
+    service/ustawieniasieci.cpp
 
 HEADERS += \
     backend/ARX.h \
     backend/GWZ.h \
     backend/PID.h \
+    service/interfejssieciowy.h \
+    service/tcpklient.h \
+    service/tcpserwer.h \
     tests/TestyJednostkowe.h \
     backend/UAR.h \
     service/WarstwaU.h \
     ui/qcustomplot.h \
     ui/mainwindow.h \
-    ui/ustawieniaarx.h
+    ui/ustawieniaarx.h \
+    service/ustawieniasieci.h
 
 FORMS += \
     ui/mainwindow.ui \
-    ui/ustawieniaarx.ui
+    ui/ustawieniaarx.ui \
+    ui/ustawieniasieci.ui

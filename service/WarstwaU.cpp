@@ -1,17 +1,22 @@
 #include "WarstwaU.h"
+#include "tcpserwer.h"
+#include "tcpklient.h"
 
 // ------------------- KONSTRUKTOR I DESTRUKTOR -------------------
 
 WarstwaU::WarstwaU(QObject *parent) : QObject(parent)
 {
+    //siec
+    m_siec = nullptr;
+
     // Inicjalizacja obiektów logicznych
-    std::vector<double> A = {-0.4, 0.1, -0.05};
-    std::vector<double> B = {0.6, 0.2, 0.1};
+    std::vector<double> A = {-0.4, 0.0, 0.00};
+    std::vector<double> B = {0.6, 0.0, 0.0};
     int k = 1;
 
     ARX model(A, B, k);
     PID regulator(1.0, 50.0, 0.1);
-    GeneratorWartosciZadanej gen(1.0, 10.0, 0.0, 0.5, 200, TypSygnalu::SygnalProstokatny);
+    GeneratorWartosciZadanej gen(1.0, 10.0, 0.0, 0.5, 50, TypSygnalu::SygnalProstokatny);
 
     symulator = new UAR(model, regulator, gen);
 
@@ -62,6 +67,32 @@ bool WarstwaU::czySymulacjaDziala() const
 double WarstwaU::getInterwalSekundy() const
 {
     return zegarSymulacji->interval() / 1000.0;
+}
+
+void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
+{
+    if(m_siec) {
+        m_siec->rozlacz();
+        m_siec->deleteLater();
+        m_siec = nullptr;
+    }
+
+    if(serwer) {
+        m_siec = new TCPSerwer(this);
+    } else m_siec = new TCPKlient(this);
+
+    connect(m_siec, &InterfejsSieciowy::polaczono, this, [=](){
+        emit infoPolaczono();
+        qDebug() << "polaczono";
+    });
+    connect(m_siec, &InterfejsSieciowy::rozlaczono, this, [=](){
+        qDebug() << "rozlaczono";
+    });
+    connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, [=](){
+        qDebug() << "odebrano dane";
+    });
+
+    m_siec->polacz(adres, port);
 }
 
 

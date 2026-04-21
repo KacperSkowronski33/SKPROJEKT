@@ -31,6 +31,8 @@ private slots:
     void aktualizujSymulacje();
     void on_parametryChanged();
 
+    void on_actionUstawienia_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -43,6 +45,12 @@ private:
 
     void setupPlot(QCustomPlot *plot, QString tytul, QString yLabel);
     void skalujWykres(QCustomPlot *plot, double minSpan = 10.0);
+
+    QString m_ostatnieIP;
+    int m_ostatniPort;
+    bool m_czyOstatniSerwer;
+    bool m_czyOstatniObiekt;
+    bool m_czyOstatniTrybLokalny;
 protected:
     void resizeEvent(QResizeEvent *event) override;
 };
