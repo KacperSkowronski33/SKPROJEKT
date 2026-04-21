@@ -222,6 +222,12 @@ void MainWindow::on_btnUstawieniaARX_clicked()
     okno.setLimityWejscia(warstwaUslug->getArxUMin(), warstwaUslug->getArxUMax());
     okno.setLimityWyjscia(warstwaUslug->getArxYMin(), warstwaUslug->getArxYMax());
 
+    if(!m_czyOstatniObiekt && !m_czyOstatniTrybLokalny)
+    {
+        okno.ustawBlokadyARX();
+    }
+
+
     if (okno.exec() == QDialog::Accepted)
     {
         warstwaUslug->setArxA(okno.getA());
@@ -503,6 +509,31 @@ void MainWindow::on_actionUstawienia_triggered()
         m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
 
         warstwaUslug->wlaczTrybSieciowy(m_czyOstatniSerwer, m_ostatniPort, m_ostatnieIP);
+        ustawBlokadySymulacji(m_czyOstatniObiekt);
     }
+}
+
+void MainWindow::ustawBlokadySymulacji(bool czyObiekt)
+
+{
+
+    if(m_czyOstatniObiekt && !m_czyOstatniTrybLokalny)
+
+    {
+
+        ui->groupBox->setEnabled(false);
+        ui->groupBox_2->setEnabled(false);
+        ui->groupBox_3->setEnabled(false);
+    } else {
+        ui->groupBox->setEnabled(true);
+        ui->groupBox_2->setEnabled(true);
+        ui->groupBox_3->setEnabled(true);
+
+    }
+
+
+
+
+
 }
 

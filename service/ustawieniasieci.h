@@ -41,6 +41,8 @@ signals:
 
 private:
     Ui::UstawieniaSieci *ui;
+    void zablokujKontrolki(bool zablokuj);
+
 };
 
 #endif // USTAWIENIASIECI_H

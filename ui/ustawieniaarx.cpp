@@ -96,3 +96,11 @@ void UstawieniaARX::on_btnAnuluj_clicked()
 {
     reject(); // Zamykamy z wynikiem Rejected
 }
+
+
+void UstawieniaARX::ustawBlokadyARX()
+{
+    ui->groupBox->setEnabled(false);
+    ui->btnZatwierdz->setEnabled(false);
+    ui->btnAnuluj->setEnabled(true);
+}

@@ -148,3 +148,5 @@ double WarstwaU::calculatePID(double uchyb, double dt) { return symulator->getPI
 
 // UAR
 double WarstwaU::simulateUAR(double zadanie) { return symulator->symuluj(zadanie); }
+
+

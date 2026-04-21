@@ -12,11 +12,16 @@ UstawieniaSieci::UstawieniaSieci(QWidget *parent)
     });
 
     connect(ui->btnPolacz, &QPushButton::clicked, this, [=](){
+
+        zablokujKontrolki(true);
+        ui->stanPolaczenia->setText("Oczekiwanie na połączenie...");
         bool serwer = this->getCzySerwer();
         QString adres = "";
         if(!serwer) adres = this->getIP();
         emit sygnalPolacz(serwer, this->getPort(), adres);
     });
+
+    zablokujKontrolki(false);
 }
 
 UstawieniaSieci::~UstawieniaSieci()
@@ -121,6 +126,30 @@ void UstawieniaSieci::on_btnAnuluj_clicked()
 
 void UstawieniaSieci::on_btnRozlacz_clicked()
 {
+    zablokujKontrolki(false);
     ui->stanPolaczenia->setText("Rozłączono");
 }
+
+void UstawieniaSieci::zablokujKontrolki(bool zablokuj)
+{
+    bool aktywne = !zablokuj;
+
+    ui->poleIP1->setEnabled(aktywne);
+    ui->poleIP2->setEnabled(aktywne);
+    ui->poleIP3->setEnabled(aktywne);
+    ui->poleIP4->setEnabled(aktywne);
+    ui->polePort->setEnabled(aktywne);
+
+    ui->radioLokalny->setEnabled(aktywne);
+    ui->radioSieciowy->setEnabled(aktywne);
+    ui->radioKlient->setEnabled(aktywne);
+    ui->radioSerwer->setEnabled(aktywne);
+    ui->radioRegulator->setEnabled(aktywne);
+    ui->radioObiekt->setEnabled(aktywne);
+
+    ui->btnPolacz->setEnabled(aktywne);
+    ui->btnRozlacz->setEnabled(zablokuj);
+
+}
+
 
