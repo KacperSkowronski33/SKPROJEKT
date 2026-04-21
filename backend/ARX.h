@@ -54,4 +54,6 @@ public:
     double getYMax() const { return yMax; }
     bool getLimityAktywne() const { return stanLimitow; }
     bool getSzumAktywny() const { return stanSzumu; }
+
+
 };

@@ -52,6 +52,8 @@ private:
     bool m_czyOstatniSerwer;
     bool m_czyOstatniObiekt;
     bool m_czyOstatniTrybLokalny;
+
+    void ustawBlokadySymulacji(bool czyObiekt);
 protected:
     void resizeEvent(QResizeEvent *event) override;
 };

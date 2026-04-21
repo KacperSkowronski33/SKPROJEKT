@@ -40,6 +40,8 @@ public:
     double getYmin() const;
     double getYmax() const;
 
+    void ustawBlokadyARX();
+
 private slots:
     void on_btnZatwierdz_clicked();
     void on_btnAnuluj_clicked();
@@ -49,6 +51,8 @@ private:
     std::vector<double> parsujWektor(QString tekst) const;
 
     QString wektorNaTekst(const std::vector<double> &vec);
+
+
 };
 
 #endif // USTAWIENIAARX_H

@@ -95,4 +95,6 @@ public:
 
     // --- UAR ---
     double simulateUAR(double zadanie);
+
+
 };
