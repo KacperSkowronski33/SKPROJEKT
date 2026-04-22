@@ -659,6 +659,19 @@ QCustomPlot {
            </property>
           </widget>
          </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="lblSiec">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

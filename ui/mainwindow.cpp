@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_czyOstatniSerwer = false;
     m_czyOstatniObiekt = false;
     connect(warstwaUslug, &WarstwaU::ramkaOdebrana, this, &MainWindow::on_odebranaRamka);
+    ui->lblSiec->clear();
 }
 
 MainWindow::~MainWindow()
@@ -541,6 +542,13 @@ void MainWindow::on_actionUstawienia_triggered()
         m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
 
         ustawBlokadySymulacji(m_czyOstatniObiekt);
+
+        if(m_czyOstatniTrybLokalny) {
+            ui->lblSiec->clear();
+        } else {
+            if(m_czyOstatniObiekt) ui->lblSiec->setText("Tryb sieciowy aktywny - obiekt");
+            else ui->lblSiec->setText("Tryb sieciowy aktywny - regulator");
+        }
     }
 }
 
