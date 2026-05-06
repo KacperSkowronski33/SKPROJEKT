@@ -52,5 +52,6 @@ void TCPSerwer::wyslijDane(const QByteArray &dane)
 {
     if(m_klient && m_klient->state() == QAbstractSocket::ConnectedState) {
         m_klient->write(dane);
+        m_klient->flush();
     } else emit blad("brak klienta");
 }

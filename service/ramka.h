@@ -32,6 +32,7 @@ struct Ramka {
     int interwal = 0;
     double u = 0.0;
     double y = 0.0;
+    double w = 0.0;
 
     //arx
     std::vector<double> wekA;

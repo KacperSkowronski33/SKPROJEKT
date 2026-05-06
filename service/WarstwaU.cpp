@@ -90,6 +90,7 @@ void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
         qDebug() << "polaczono";
     });
     connect(m_siec, &InterfejsSieciowy::rozlaczono, this, [=](){
+        emit infoRozlaczono();
         qDebug() << "rozlaczono";
     });
     connect(m_siec, &InterfejsSieciowy::daneOdebrane, this, [=](){
