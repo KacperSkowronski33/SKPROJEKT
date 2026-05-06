@@ -6,7 +6,7 @@
 #include "qcustomplot.h"
 #include "WarstwaU.h"
 #include <QResizeEvent>
-
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,6 +33,7 @@ private slots:
 
     void on_actionUstawienia_triggered();
     void on_odebranaRamka(const Ramka &ramka);
+    void on_rozlaczono();
 
 private:
     Ui::MainWindow *ui;
@@ -40,7 +41,7 @@ private:
 
     WarstwaU *warstwaUslug;
 
-
+    void rysujWykresy(double w, double u, double e, double y, double valP, double valI, double valD, double dt);
     double aktualnyCzas;
     double y_prev;
 
@@ -52,6 +53,10 @@ private:
     bool m_czyOstatniSerwer;
     bool m_czyOstatniObiekt;
     bool m_czyOstatniTrybLokalny;
+    unsigned int m_numerProbki = 0;
+    bool m_czyOdebranoOdpowiedz = true;
+    QElapsedTimer m_stoperSiec;
+    qint64 m_opoznienieSieci;
 
     void ustawBlokadySymulacji(bool czyObiekt);
 protected:

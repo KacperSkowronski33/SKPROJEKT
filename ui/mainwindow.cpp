@@ -77,12 +77,15 @@ MainWindow::MainWindow(QWidget *parent)
     // 5. Pierwsza synchronizacja parametrów z UI do logiki
     on_parametryChanged();
 
+    //6. Siec
     m_ostatniPort = 00000;
     m_czyOstatniTrybLokalny = true;
     m_czyOstatniSerwer = false;
     m_czyOstatniObiekt = false;
     connect(warstwaUslug, &WarstwaU::ramkaOdebrana, this, &MainWindow::on_odebranaRamka);
+    connect(warstwaUslug, &WarstwaU::infoRozlaczono, this, &MainWindow::on_rozlaczono);
     ui->lblSiec->clear();
+    m_opoznienieSieci = 0;
 }
 
 MainWindow::~MainWindow()
@@ -106,6 +109,9 @@ void MainWindow::on_btnStop_clicked()
 
 void MainWindow::aktualizujSymulacje()
 {
+    if (!m_czyOstatniTrybLokalny && m_czyOstatniObiekt) { //siec - obiekt
+        return;
+    }
     double dt = warstwaUslug->getInterwalSekundy();
     double w = warstwaUslug->generateGwz();
 
@@ -123,14 +129,36 @@ void MainWindow::aktualizujSymulacje()
     double valI = warstwaUslug->PIDgetI();
     double valD = warstwaUslug->PIDgetD();
 
-    double y = warstwaUslug->calculateARX(u);
+    if(m_czyOstatniTrybLokalny) { //lokalny
 
-    // ZABEZPIECZENIE 3: Ochrona wyjścia obiektu
-    if (std::isnan(y) || std::isinf(y)) y = 0.0;
+        double y = warstwaUslug->calculateARX(u);
+        if (std::isnan(y) || std::isinf(y)) y = 0.0;
+        y_prev = y;
+        rysujWykresy(w, u, e, y, valP, valI, valD, dt);
 
-    y_prev = y;
+    } else { //siec - regulator
+        if(!m_czyOdebranoOdpowiedz) {
+            ui->lblSiecLampka->setStyleSheet("background-color: red; border-radius: 10px");
+            ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
+        } else {
+            ui->lblSiecLampka->setStyleSheet("background-color: green; border-radius: 10px");
+        }
+        m_czyOdebranoOdpowiedz = false;
+        m_stoperSiec.start();
 
-    // 3. Dodawanie danych
+        Ramka rDaneSym;
+        rDaneSym.typ = TypRamki::DaneSymulacji;
+        rDaneSym.u = u;
+        rDaneSym.w = w;
+        m_numerProbki++;
+        rDaneSym.numerProbki = m_numerProbki;
+        warstwaUslug->wyslijRamke(rDaneSym);
+        rysujWykresy(w, u, e, y_prev, valP, valI, valD, dt);
+    }
+}
+
+void MainWindow::rysujWykresy(double w, double u, double e, double y, double valP, double valI, double valD, double dt)
+{
     ui->chartWykres1->graph(0)->addData(aktualnyCzas, w);
     ui->chartWykres1->graph(1)->addData(aktualnyCzas, y);
     ui->chartWykres2->graph(0)->addData(aktualnyCzas, e);
@@ -162,12 +190,20 @@ void MainWindow::aktualizujSymulacje()
     skalujWykres(ui->chartWykres2);
     skalujWykres(ui->chartwykres3);
 
-    if (ui->chartWykres4)
-        skalujWykres(ui->chartWykres4);
+    if (ui->chartWykres4) {
+        if(m_czyOstatniObiekt) {
+            ui->chartWykres4->yAxis->setRange(-2.0,2.0);
+        } else skalujWykres(ui->chartWykres4);
+    }
 
     // 6. Aktualizacja czasu
     aktualnyCzas += dt;
     ui->lblCzas->setText(QString("Czas: %1 s").arg(QString::number(aktualnyCzas, 'f', 2)));
+
+    ui->chartWykres1->replot(QCustomPlot::rpQueuedReplot);
+    ui->chartWykres2->replot(QCustomPlot::rpQueuedReplot);
+    ui->chartwykres3->replot(QCustomPlot::rpQueuedReplot);
+    ui->chartWykres4->replot(QCustomPlot::rpQueuedReplot);
 }
 
 void MainWindow::on_btnStart_clicked()
@@ -435,7 +471,7 @@ void MainWindow::skalujWykres(QCustomPlot *wykres, double minSpan)
 
     if (!QCPRange::validRange(zakres)) {
         wykres->yAxis->setRange(-minSpan/2.0, minSpan/2.0);
-        wykres->replot();
+        //wykres->replot();
         return;
     }
 
@@ -449,7 +485,7 @@ void MainWindow::skalujWykres(QCustomPlot *wykres, double minSpan)
         wykres->yAxis->scaleRange(1.3);
     }
 
-    wykres->replot();
+    //wykres->replot();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -499,6 +535,8 @@ void MainWindow::on_parametryChanged()
     warstwaUslug->setInterwalSymulacji(ui->spinInterwal->value());
 
     ui->statusbar->showMessage("Parametry zaktualizowane!", 2000);
+
+
 
     Ramka rPID;
     rPID.typ = TypRamki::ParametryPID;
@@ -570,8 +608,31 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
 {
     switch(ramka.typ) {
     case TypRamki::DaneSymulacji:
+        if(m_czyOstatniTrybLokalny) break;
 
-        //na te spotkanie nie musi byc
+        if(m_czyOstatniObiekt) {
+            double u = ramka.u;
+            double w = ramka.w;
+            double dt = warstwaUslug->getInterwalSekundy();
+
+            double y = warstwaUslug->calculateARX(u);
+            if(std::isnan(y) || std::isinf(y)) y = 0.0;
+            Ramka rOdpDoRegulatora;
+            rOdpDoRegulatora.typ = TypRamki::DaneSymulacji;
+            rOdpDoRegulatora.y = y;
+            rOdpDoRegulatora.numerProbki = ramka.numerProbki;
+            warstwaUslug->wyslijRamke(rOdpDoRegulatora);
+
+            double e = w - y;
+            rysujWykresy(w, u, e, y, 0.0,0.0,0.0,dt);
+        } else {
+            if(ramka.numerProbki == m_numerProbki) {
+                m_opoznienieSieci = m_stoperSiec.elapsed();
+                ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
+                m_czyOdebranoOdpowiedz = true;
+                y_prev = ramka.y;
+            }
+        }
         break;
 
     case TypRamki::ParametryARX:
@@ -618,3 +679,20 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
         break;
     };
 }
+
+void MainWindow::on_rozlaczono()
+{
+    if (!m_czyOstatniTrybLokalny) {
+        m_czyOstatniTrybLokalny = true;
+        m_czyOstatniObiekt = false;
+        ustawBlokadySymulacji(false);
+        ui->lblSiecLampka->setStyleSheet("background-color: gray; border-radius: 10px");
+        ui->lblSiecInfo->clear();
+        ui->lblSiec->clear();
+        QMessageBox::critical(this, "ROZŁĄCZONO",
+                              "Utracono połączenie sieciowe z drugą instancją.\n\n"
+                              "Symulacja została automatycznie przełączona w tryb lokalny.");
+    }
+}
+
+

@@ -41,6 +41,7 @@ public:
 signals:
     void zadanieOdswiezenia();
     void infoPolaczono();
+    void infoRozlaczono();
     void ramkaOdebrana(const Ramka &ramka);
 
 private slots:

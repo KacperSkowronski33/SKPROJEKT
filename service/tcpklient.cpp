@@ -34,5 +34,6 @@ void TCPKlient::wyslijDane(const QByteArray &dane)
 {
     if(m_socket->state() == QAbstractSocket::ConnectedState) {
         m_socket->write(dane);
+        m_socket->flush();
     } else emit blad("brak polaczenia");
 }

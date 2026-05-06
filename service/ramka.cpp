@@ -10,7 +10,8 @@ QDataStream &operator<<(QDataStream &out, const Ramka &ramka) //operator do seri
             << ramka.numerProbki
             << ramka.interwal
             << ramka.u
-            << ramka.y;
+            << ramka.y
+            << ramka.w;
                break;
 
     case TypRamki::ParametryARX:
@@ -60,7 +61,8 @@ QDataStream &operator>>(QDataStream &in, Ramka &ramka) //operator do deserializa
             >> ramka.numerProbki
             >> ramka.interwal
             >> ramka.u
-            >> ramka.y;
+            >> ramka.y
+            >> ramka.w;
         ramka.aktStan = static_cast<StanSymulacji>(stan);
         break;
     case TypRamki::ParametryARX:
