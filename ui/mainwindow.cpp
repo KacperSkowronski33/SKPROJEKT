@@ -552,6 +552,9 @@ void MainWindow::on_parametryChanged()
     rGWZ.okres = ui->spinOkres->value();
     rGWZ.wypelnienie = ui->spinWypelnienie->value();
     rGWZ.typSyg = (ui->comboTyp->currentIndex() == 0) ? TypSygnalu::SygnalProstokatny : TypSygnalu::Sinusoida;
+    rGWZ.skladowa_stala = ui->spinStala->value();
+    rGWZ.interwal = ui->spinInterwal->value();
+
     warstwaUslug->wyslijRamke(rGWZ);
 }
 
@@ -621,7 +624,9 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
             rOdpDoRegulatora.typ = TypRamki::DaneSymulacji;
             rOdpDoRegulatora.y = y;
             rOdpDoRegulatora.numerProbki = ramka.numerProbki;
+            rOdpDoRegulatora.interwal = ramka.interwal;
             warstwaUslug->wyslijRamke(rOdpDoRegulatora);
+
 
             double e = w - y;
             rysujWykresy(w, u, e, y, 0.0,0.0,0.0,dt);
@@ -672,9 +677,15 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
         warstwaUslug->setGwzPeriod(ramka.okres);
         warstwaUslug->setGwzWypelnienie(ramka.wypelnienie);
         warstwaUslug->setGwzType(ramka.typSyg);
+        warstwaUslug->setGwzStala(ramka.skladowa_stala);
+        warstwaUslug->setInterwalSymulacji(ramka.interwal);
+        warstwaUslug->setGwzTT(ramka.interwal);
         ui->spinAmp->setValue(ramka.amplituda);
         ui->spinOkres->setValue(ramka.okres);
         ui->spinWypelnienie->setValue(ramka.wypelnienie);
+        ui->comboTyp->setCurrentIndex(ramka.typSyg == TypSygnalu::SygnalProstokatny ? 0 : 1);
+        ui->spinStala->setValue(ramka.skladowa_stala);
+        ui->spinInterwal->setValue(ramka.interwal);
 
         break;
     };

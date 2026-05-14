@@ -8,7 +8,6 @@ QDataStream &operator<<(QDataStream &out, const Ramka &ramka) //operator do seri
     case TypRamki::DaneSymulacji:
         out << static_cast<qint32>(ramka.aktStan)
             << ramka.numerProbki
-            << ramka.interwal
             << ramka.u
             << ramka.y
             << ramka.w;
@@ -40,7 +39,9 @@ QDataStream &operator<<(QDataStream &out, const Ramka &ramka) //operator do seri
         out << static_cast<qint32>(ramka.typSyg)
             << ramka.amplituda
             << ramka.okres
-            << ramka.wypelnienie;
+            << ramka.interwal
+            << ramka.wypelnienie
+            << ramka.skladowa_stala;
                break;
     }
     return out;
@@ -59,7 +60,6 @@ QDataStream &operator>>(QDataStream &in, Ramka &ramka) //operator do deserializa
         qint32 stan;
         in >> stan
             >> ramka.numerProbki
-            >> ramka.interwal
             >> ramka.u
             >> ramka.y
             >> ramka.w;
@@ -103,7 +103,9 @@ QDataStream &operator>>(QDataStream &in, Ramka &ramka) //operator do deserializa
         in >> typSygnalu
             >> ramka.amplituda
             >> ramka.okres
-            >> ramka.wypelnienie;
+            >> ramka.interwal
+            >> ramka.wypelnienie
+            >> ramka.skladowa_stala;
         ramka.typSyg = static_cast<TypSygnalu>(typSygnalu);
         break;
     }

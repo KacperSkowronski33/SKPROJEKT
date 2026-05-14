@@ -57,6 +57,7 @@ struct Ramka {
     double amplituda = 0.0;
     double okres = 0.0;
     double wypelnienie = 0.0;
+    double skladowa_stala = 0.0;
 
 };
 
