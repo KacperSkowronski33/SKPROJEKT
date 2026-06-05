@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "ustawieniaarx.h"
 #include "WarstwaU.h"
-#include <iostream>
 #include <cmath>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -10,7 +9,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFile>
-#include <qdebug>
+#include <QDebug>
 #include "ustawieniasieci.h"
 
 using namespace std;
@@ -86,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(warstwaUslug, &WarstwaU::infoRozlaczono, this, &MainWindow::on_rozlaczono);
     ui->lblSiec->clear();
     m_opoznienieSieci = 0;
+
 }
 
 MainWindow::~MainWindow()
@@ -153,7 +153,14 @@ void MainWindow::aktualizujSymulacje()
         m_numerProbki++;
         rDaneSym.numerProbki = m_numerProbki;
         warstwaUslug->wyslijRamke(rDaneSym);
-        rysujWykresy(w, u, e, y_prev, valP, valI, valD, dt);
+
+        m_tempStan.w = w;
+        m_tempStan.u = u;
+        m_tempStan.e = e;
+        m_tempStan.p = valP;
+        m_tempStan.i = valI;
+        m_tempStan.d = valD;
+        //rysujWykresy(w, u, e, y_prev, valP, valI, valD, dt); //byc moze to powoduje opoznienie rysowania wykresu!!!!
     }
 }
 
@@ -595,7 +602,7 @@ void MainWindow::on_actionUstawienia_triggered()
 
 void MainWindow::ustawBlokadySymulacji(bool czyObiekt)
 {
-    if(m_czyOstatniObiekt && !m_czyOstatniTrybLokalny)
+    if(czyObiekt && !m_czyOstatniTrybLokalny)
     {
         ui->groupBox->setEnabled(false);
         ui->groupBox_2->setEnabled(false);
@@ -627,7 +634,7 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
             rOdpDoRegulatora.interwal = ramka.interwal;
             warstwaUslug->wyslijRamke(rOdpDoRegulatora);
 
-
+            aktualnyCzas= (ramka.numerProbki - 1) * dt; //probba 1 - synchronizacja czasow
             double e = w - y;
             rysujWykresy(w, u, e, y, 0.0,0.0,0.0,dt);
         } else {
@@ -636,6 +643,14 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
                 ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
                 m_czyOdebranoOdpowiedz = true;
                 y_prev = ramka.y;
+
+
+                //tutaj przeniesione rysowanie - aktualizujSymulacje()
+                double dt = warstwaUslug->getInterwalSekundy();
+                aktualnyCzas= (ramka.numerProbki - 1) * dt; //synchronizacja czasow
+
+
+                rysujWykresy(m_tempStan.w, m_tempStan.u, m_tempStan.e, y_prev, m_tempStan.p, m_tempStan.i, m_tempStan.d, dt);
             }
         }
         break;

@@ -58,6 +58,15 @@ private:
     QElapsedTimer m_stoperSiec;
     qint64 m_opoznienieSieci;
 
+    struct tempWyslaneDane {
+        double w = 0.0;
+        double u = 0.0;
+        double e = 0.0;
+        double p = 0.0;
+        double i = 0.0;
+        double d = 0.0;
+    } m_tempStan;
+
     void ustawBlokadySymulacji(bool czyObiekt);
 protected:
     void resizeEvent(QResizeEvent *event) override;

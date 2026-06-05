@@ -9,8 +9,6 @@
 enum class TypRamki
 {
     DaneSymulacji,
-    //SygnalRegulator,
-    //SygnalObiekt,
     ParametryARX,
     ParametryPID,
     ParametryGWZ
