@@ -100,6 +100,15 @@ void WarstwaU::wlaczTrybSieciowy(bool serwer, int port, const QString &adres)
     m_siec->polacz(adres, port);
 }
 
+void WarstwaU::wylaczTrybSieciowy()
+{
+    if(m_siec) {
+        m_siec->rozlacz();
+        m_siec->deleteLater();
+        m_siec = nullptr;
+    }
+}
+
 void WarstwaU::wyslijRamke(const Ramka &ramka)
 {
     if(!m_siec) return;

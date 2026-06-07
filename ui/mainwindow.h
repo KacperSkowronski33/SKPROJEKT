@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "qcustomplot.h"
 #include "WarstwaU.h"
+#include "ustawieniasieci.h"
 #include <QResizeEvent>
 #include <QElapsedTimer>
 
@@ -57,6 +58,8 @@ private:
     bool m_czyOdebranoOdpowiedz = true;
     QElapsedTimer m_stoperSiec;
     qint64 m_opoznienieSieci;
+
+    UstawieniaSieci *oknoSiec;
 
     struct tempWyslaneDane {
         double w = 0.0;
