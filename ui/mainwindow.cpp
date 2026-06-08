@@ -86,7 +86,27 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lblSiec->clear();
     m_opoznienieSieci = 0;
 
+    //7. Poprawka sieci
+    oknoSiec = new UstawieniaSieci(this);
+    oknoSiec->setIP("");
+
+    connect(oknoSiec, &UstawieniaSieci::sygnalPolacz, this, [=](bool serwer, int port, QString adres) {
+        warstwaUslug->wlaczTrybSieciowy(serwer, port, adres);
+    });
+
+    connect(warstwaUslug, &WarstwaU::infoPolaczono, oknoSiec, [this](){
+        oknoSiec->statusPolaczono(oknoSiec->getIP());
+    });
+
+    connect(oknoSiec, &UstawieniaSieci::sygnalRozlacz, this, [this]() {
+        m_czyOstatniTrybLokalny = true;
+        warstwaUslug->wylaczTrybSieciowy();
+        ustawBlokadySymulacji(false);
+        ui->lblSiec->clear();
+    });
+
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -233,6 +253,8 @@ void MainWindow::on_btnReset_clicked()
     aktualnyCzas = 0.0;
     y_prev = 0.0;
     ui->lblCzas->setText("Czas: 0.00 s");
+    m_numerProbki = 0;
+    m_czyOdebranoOdpowiedz = true;
 
     // Czyszczenie danych na wykresach
     ui->chartWykres1->graph(0)->data()->clear();
@@ -567,27 +589,12 @@ void MainWindow::on_parametryChanged()
 
 void MainWindow::on_actionUstawienia_triggered()
 {
-    UstawieniaSieci oknoSiec(this);
-    oknoSiec.setIP(m_ostatnieIP);
-    oknoSiec.setPort(m_ostatniPort);
-    oknoSiec.setCzyLokalny(m_czyOstatniTrybLokalny);
-    oknoSiec.setCzyObiekt(m_czyOstatniObiekt);
-    oknoSiec.setCzySerwer(m_czyOstatniSerwer);
-
-    connect(&oknoSiec, &UstawieniaSieci::sygnalPolacz, this, [=](bool serwer, int port, QString adres) {
-        warstwaUslug->wlaczTrybSieciowy(serwer, port, adres);
-    });
-
-    connect(warstwaUslug, &WarstwaU::infoPolaczono, &oknoSiec, [&oknoSiec](){
-        oknoSiec.statusPolaczono(oknoSiec.getIP());
-    });
-
-    if(oknoSiec.exec() == QDialog::Accepted) {
-        m_ostatnieIP = oknoSiec.getIP();
-        m_ostatniPort = oknoSiec.getPort();
-        m_czyOstatniSerwer = oknoSiec.getCzySerwer();
-        m_czyOstatniObiekt = oknoSiec.getCzyObiekt();
-        m_czyOstatniTrybLokalny = oknoSiec.getCzyLokalny();
+    if(oknoSiec->exec() == QDialog::Accepted) {
+        m_ostatnieIP = oknoSiec->getIP();
+        m_ostatniPort = oknoSiec->getPort();
+        m_czyOstatniSerwer = oknoSiec->getCzySerwer();
+        m_czyOstatniObiekt = oknoSiec->getCzyObiekt();
+        m_czyOstatniTrybLokalny = oknoSiec->getCzyLokalny();
 
         ustawBlokadySymulacji(m_czyOstatniObiekt);
 
@@ -715,10 +722,13 @@ void MainWindow::on_rozlaczono()
         ui->lblSiecLampka->setStyleSheet("background-color: gray; border-radius: 10px");
         ui->lblSiecInfo->clear();
         ui->lblSiec->clear();
-        QMessageBox::critical(this, "ROZŁĄCZONO",
-                              "Utracono połączenie sieciowe z drugą instancją.\n\n"
-                              "Symulacja została automatycznie przełączona w tryb lokalny.");
+        warstwaUslug->wylaczTrybSieciowy();
+        oknoSiec->wymusRozlaczenie();
+        warstwaUslug->resetPid();
+
+        QMessageBox::warning(this, "ROZŁĄCZONO",
+                             "Utracono połączenie sieciowe z drugą instancją.\n\n"
+                             "Symulacja płynnie wraca do trybu lokalnego.");
     }
 }
-
 

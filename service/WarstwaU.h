@@ -35,6 +35,7 @@ public:
 
     //siec
     void wlaczTrybSieciowy(bool serwer, int port ,const QString &adres = "127.0.0.1");
+    void wylaczTrybSieciowy();
     void wyslijRamke(const Ramka &ramka);
 
 
