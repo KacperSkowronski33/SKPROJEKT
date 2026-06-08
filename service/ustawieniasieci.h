@@ -28,6 +28,7 @@ public:
     void setCzyObiekt(bool czyObi);
 
     void statusPolaczono(const QString &adresip);
+    void wymusRozlaczenie();
 
 private slots:
     void on_btnZatwierdz_clicked();
@@ -38,6 +39,7 @@ private slots:
 
 signals:
     void sygnalPolacz(bool czySerwer, int port, QString adres);
+    void sygnalRozlacz();
 
 private:
     Ui::UstawieniaSieci *ui;

@@ -7,6 +7,20 @@ UstawieniaSieci::UstawieniaSieci(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->radioLokalny, &QRadioButton::toggled, this, [=](bool lokalny) {
+        bool siecAktywna = !lokalny;
+        ui->poleIP1->setEnabled(siecAktywna);
+        ui->poleIP2->setEnabled(siecAktywna);
+        ui->poleIP3->setEnabled(siecAktywna);
+        ui->poleIP4->setEnabled(siecAktywna);
+        ui->polePort->setEnabled(siecAktywna);
+        ui->radioSerwer->setEnabled(siecAktywna);
+        ui->radioKlient->setEnabled(siecAktywna);
+        ui->radioRegulator->setEnabled(siecAktywna);
+        ui->radioObiekt->setEnabled(siecAktywna);
+        ui->btnPolacz->setEnabled(siecAktywna);
+    });
+
     connect(ui->radioSerwer, &QRadioButton::toggled, this, [=](bool serwer) {
         ui->kontenerIP->setVisible(!serwer);
     });
@@ -22,6 +36,8 @@ UstawieniaSieci::UstawieniaSieci(QWidget *parent)
     });
 
     zablokujKontrolki(false);
+
+    emit ui->radioLokalny->toggled(ui->radioLokalny->isChecked());
 }
 
 UstawieniaSieci::~UstawieniaSieci()
@@ -128,6 +144,15 @@ void UstawieniaSieci::on_btnRozlacz_clicked()
 {
     zablokujKontrolki(false);
     ui->stanPolaczenia->setText("Rozłączono");
+    ui->radioLokalny->setChecked(true);
+    emit sygnalRozlacz();
+}
+
+void UstawieniaSieci::wymusRozlaczenie()
+{
+    zablokujKontrolki(false);
+    ui->stanPolaczenia->setText("Brak połączenia");
+    ui->radioLokalny->setChecked(true);
 }
 
 void UstawieniaSieci::zablokujKontrolki(bool zablokuj)
