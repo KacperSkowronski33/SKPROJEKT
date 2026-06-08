@@ -634,7 +634,7 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
             rOdpDoRegulatora.interwal = ramka.interwal;
             warstwaUslug->wyslijRamke(rOdpDoRegulatora);
 
-            aktualnyCzas= (ramka.numerProbki - 1) * dt; //probba 1 - synchronizacja czasow
+            //aktualnyCzas= (ramka.numerProbki - 1) * dt; //probba 1 - synchronizacja czasow
             double e = w - y;
             rysujWykresy(w, u, e, y, 0.0,0.0,0.0,dt);
         } else {
@@ -647,7 +647,7 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
 
                 //tutaj przeniesione rysowanie - aktualizujSymulacje()
                 double dt = warstwaUslug->getInterwalSekundy();
-                aktualnyCzas= (ramka.numerProbki - 1) * dt; //synchronizacja czasow
+                //aktualnyCzas= (ramka.numerProbki - 1) * dt; //synchronizacja czasow
 
 
                 rysujWykresy(m_tempStan.w, m_tempStan.u, m_tempStan.e, y_prev, m_tempStan.p, m_tempStan.i, m_tempStan.d, dt);
