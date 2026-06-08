@@ -160,6 +160,8 @@ void MainWindow::aktualizujSymulacje()
         if(!m_czyOdebranoOdpowiedz) {
             ui->lblSiecLampka->setStyleSheet("background-color: red; border-radius: 10px");
             ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
+
+            return;
         } else {
             ui->lblSiecLampka->setStyleSheet("background-color: green; border-radius: 10px");
         }
