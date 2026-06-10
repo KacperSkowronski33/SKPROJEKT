@@ -37,6 +37,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->chartWykres1->addGraph();
     ui->chartWykres1->graph(1)->setPen(QPen(Qt::blue));
     ui->chartWykres1->graph(1)->setName("Wyjście (y)");
+
+    ui->chartWykres1->addGraph();
+    QPen penEst(QColor(7,21,91));
+    penEst.setStyle(Qt::DashLine);
+    penEst.setWidthF(0.75);
+    ui->chartWykres1->graph(2)->setPen(penEst);
+    ui->chartWykres1->graph(2)->setName("Estymowane wyjście (y)");
     ui->chartWykres1->legend->setVisible(true);
 
     setupPlot(ui->chartWykres2, "Uchyb", "e");
@@ -96,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(warstwaUslug, &WarstwaU::infoPolaczono, oknoSiec, [this](){
         oknoSiec->statusPolaczono(oknoSiec->getIP());
+        m_stoperSiec.start();
     });
 
     connect(oknoSiec, &UstawieniaSieci::sygnalRozlacz, this, [this]() {
@@ -154,27 +162,45 @@ void MainWindow::aktualizujSymulacje()
         double y = warstwaUslug->calculateARX(u);
         if (std::isnan(y) || std::isinf(y)) y = 0.0;
         y_prev = y;
-        rysujWykresy(w, u, e, y, valP, valI, valD, dt);
+        rysujWykresy(w, u, e, y,y, valP, valI, valD, dt);
 
     } else { //siec - regulator
-        if(!m_czyOdebranoOdpowiedz) {
-            ui->lblSiecLampka->setStyleSheet("background-color: red; border-radius: 10px");
-            ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
+        if(!m_stoperSiec.isValid()) m_stoperSiec.start();
 
-            return;
-        } else {
-            ui->lblSiecLampka->setStyleSheet("background-color: green; border-radius: 10px");
+        if(!m_siecHistoriaProbek.isEmpty()) {
+            qint64 najstarszaPaczkaCzas = m_siecHistoriaProbek.first();
+            unsigned int maxBrakOdpowiedzi = 5000;
+            if(m_stoperSiec.elapsed() - najstarszaPaczkaCzas > maxBrakOdpowiedzi) {
+                on_rozlaczono();
+                ui->lblSiecLampka->deleteLater();
+                return;
+            }
         }
-        m_czyOdebranoOdpowiedz = false;
-        m_stoperSiec.start();
+
+        double y_est = warstwaUslug->calculateARX(u);
+        if (std::isnan(y_est) || std::isinf(y_est)) y_est = 0.0;
+
+        m_numerProbki++;
 
         Ramka rDaneSym;
         rDaneSym.typ = TypRamki::DaneSymulacji;
         rDaneSym.u = u;
         rDaneSym.w = w;
-        m_numerProbki++;
         rDaneSym.numerProbki = m_numerProbki;
+        rDaneSym.interwal = ui->spinInterwal->value();
+
+        m_siecHistoriaProbek[m_numerProbki] = m_stoperSiec.elapsed();
         warstwaUslug->wyslijRamke(rDaneSym);
+
+        if(m_siecHistoriaProbek.size() > 5) {
+            ui->lblSiecLampka->setStyleSheet("background-color: #ef5350; border-radius: 10px");
+        } else if(m_siecHistoriaProbek.size() > 1) {
+            ui->lblSiecLampka->setStyleSheet("background-color: #ffa726; border-radius: 10px");
+        } else {
+            ui->lblSiecLampka->setStyleSheet("background-color: #66bb6a; border-radius: 10px");
+        }
+
+        ui->lblSiecInfo->setText(QString("Opóźnienie: %1 ms").arg(m_opoznienieSieci));
 
         m_tempStan.w = w;
         m_tempStan.u = u;
@@ -182,14 +208,15 @@ void MainWindow::aktualizujSymulacje()
         m_tempStan.p = valP;
         m_tempStan.i = valI;
         m_tempStan.d = valD;
-        //rysujWykresy(w, u, e, y_prev, valP, valI, valD, dt); //byc moze to powoduje opoznienie rysowania wykresu!!!!
+        rysujWykresy(w, u, e, y_prev, y_est, valP, valI, valD, dt);
     }
 }
 
-void MainWindow::rysujWykresy(double w, double u, double e, double y, double valP, double valI, double valD, double dt)
+void MainWindow::rysujWykresy(double w, double u, double e, double y, double yEst, double valP, double valI, double valD, double dt)
 {
     ui->chartWykres1->graph(0)->addData(aktualnyCzas, w);
     ui->chartWykres1->graph(1)->addData(aktualnyCzas, y);
+    ui->chartWykres1->graph(2)->addData(aktualnyCzas, yEst);
     ui->chartWykres2->graph(0)->addData(aktualnyCzas, e);
     ui->chartwykres3->graph(0)->addData(aktualnyCzas, u);
     ui->chartWykres4->graph(0)->addData(aktualnyCzas, valP);
@@ -208,6 +235,7 @@ void MainWindow::rysujWykresy(double w, double u, double e, double y, double val
 
     ui->chartWykres1->graph(0)->data()->removeBefore(minX);
     ui->chartWykres1->graph(1)->data()->removeBefore(minX);
+    ui->chartWykres1->graph(2)->data()->removeBefore(minX);
     ui->chartWykres2->graph(0)->data()->removeBefore(minX);
     ui->chartwykres3->graph(0)->data()->removeBefore(minX);
     ui->chartWykres4->graph(0)->data()->removeBefore(minX);
@@ -258,9 +286,12 @@ void MainWindow::on_btnReset_clicked()
     m_numerProbki = 0;
     m_czyOdebranoOdpowiedz = true;
 
+    m_siecHistoriaProbek.clear();
+
     // Czyszczenie danych na wykresach
     ui->chartWykres1->graph(0)->data()->clear();
     ui->chartWykres1->graph(1)->data()->clear();
+    ui->chartWykres1->graph(2)->data().clear();
     ui->chartWykres2->graph(0)->data()->clear();
     ui->chartwykres3->graph(0)->data()->clear();
     ui->chartWykres4->graph(0)->data()->clear();
@@ -603,7 +634,10 @@ void MainWindow::on_actionUstawienia_triggered()
         if(m_czyOstatniTrybLokalny) {
             ui->lblSiec->clear();
         } else {
-            if(m_czyOstatniObiekt) ui->lblSiec->setText("Tryb sieciowy aktywny - obiekt");
+            if(m_czyOstatniObiekt) {
+                ui->lblSiec->setText("Tryb sieciowy aktywny - obiekt");
+                warstwaUslug->stopSymulacji();
+            }
             else ui->lblSiec->setText("Tryb sieciowy aktywny - regulator");
         }
     }
@@ -636,6 +670,10 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
 
             double y = warstwaUslug->calculateARX(u);
             if(std::isnan(y) || std::isinf(y)) y = 0.0;
+
+            double e = w - y;
+            warstwaUslug->calculatePID(e, dt);
+
             Ramka rOdpDoRegulatora;
             rOdpDoRegulatora.typ = TypRamki::DaneSymulacji;
             rOdpDoRegulatora.y = y;
@@ -643,23 +681,13 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
             rOdpDoRegulatora.interwal = ramka.interwal;
             warstwaUslug->wyslijRamke(rOdpDoRegulatora);
 
-            //aktualnyCzas= (ramka.numerProbki - 1) * dt; //probba 1 - synchronizacja czasow
-            double e = w - y;
-            rysujWykresy(w, u, e, y, 0.0,0.0,0.0,dt);
+            rysujWykresy(w, u, e, y,y, 0.0,0.0,0.0,dt);
         } else {
-            if(ramka.numerProbki == m_numerProbki) {
-                m_opoznienieSieci = m_stoperSiec.elapsed();
-                ui->lblSiecInfo->setText("Opóźnienie: " + QString::number(m_opoznienieSieci) + " ms");
-                m_czyOdebranoOdpowiedz = true;
+            if(m_siecHistoriaProbek.contains(ramka.numerProbki)) {
+                qint64 czasWyslania = m_siecHistoriaProbek[ramka.numerProbki];
+                m_opoznienieSieci = m_stoperSiec.elapsed() - czasWyslania;
+                m_siecHistoriaProbek.remove(ramka.numerProbki);
                 y_prev = ramka.y;
-
-
-                //tutaj przeniesione rysowanie - aktualizujSymulacje()
-                double dt = warstwaUslug->getInterwalSekundy();
-                //aktualnyCzas= (ramka.numerProbki - 1) * dt; //synchronizacja czasow
-
-
-                rysujWykresy(m_tempStan.w, m_tempStan.u, m_tempStan.e, y_prev, m_tempStan.p, m_tempStan.i, m_tempStan.d, dt);
             }
         }
         break;
@@ -726,11 +754,11 @@ void MainWindow::on_rozlaczono()
         ui->lblSiec->clear();
         warstwaUslug->wylaczTrybSieciowy();
         oknoSiec->wymusRozlaczenie();
-        warstwaUslug->resetPid();
+        //warstwaUslug->resetPid();
 
         QMessageBox::warning(this, "ROZŁĄCZONO",
                              "Utracono połączenie sieciowe z drugą instancją.\n\n"
-                             "Symulacja płynnie wraca do trybu lokalnego.");
+                             "Symulacja wraca do trybu lokalnego.");
     }
 }
 

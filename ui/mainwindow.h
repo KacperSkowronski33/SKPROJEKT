@@ -8,6 +8,7 @@
 #include "ustawieniasieci.h"
 #include <QResizeEvent>
 #include <QElapsedTimer>
+#include <QMap>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,7 +43,7 @@ private:
 
     WarstwaU *warstwaUslug;
 
-    void rysujWykresy(double w, double u, double e, double y, double valP, double valI, double valD, double dt);
+    void rysujWykresy(double w, double u, double e, double y, double yEst, double valP, double valI, double valD, double dt);
     double aktualnyCzas;
     double y_prev;
 
@@ -58,7 +59,7 @@ private:
     bool m_czyOdebranoOdpowiedz = true;
     QElapsedTimer m_stoperSiec;
     qint64 m_opoznienieSieci;
-
+    QMap<unsigned int, qint64> m_siecHistoriaProbek;
     UstawieniaSieci *oknoSiec;
 
     struct tempWyslaneDane {
