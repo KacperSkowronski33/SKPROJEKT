@@ -44,7 +44,16 @@ MainWindow::MainWindow(QWidget *parent)
     penEst.setWidthF(0.75);
     ui->chartWykres1->graph(2)->setPen(penEst);
     ui->chartWykres1->graph(2)->setName("Estymowane wyjście (y)");
+    //ui->chartWykres1->legend->setVisible(true);
+
+    //
+    ui->chartWykres1->addGraph();
+    ui->chartWykres1->graph(3)->setLineStyle(QCPGraph::lsNone);
+    QCPScatterStyle scatterStyle(QCPScatterStyle::ssCircle, Qt::red, 9);
+    ui->chartWykres1->graph(3)->setScatterStyle(scatterStyle);
+    ui->chartWykres1->graph(3)->setName("Zgubiony pakiet");
     ui->chartWykres1->legend->setVisible(true);
+    //
 
     setupPlot(ui->chartWykres2, "Uchyb", "e");
     ui->chartWykres2->addGraph();
@@ -177,8 +186,17 @@ void MainWindow::aktualizujSymulacje()
             }
         }
 
-        double y_est = warstwaUslug->calculateARX(u);
-        if (std::isnan(y_est) || std::isinf(y_est)) y_est = 0.0;
+        //double y_est = warstwaUslug->calculateARX(u);
+        //if (std::isnan(y_est) || std::isinf(y_est)) y_est = 0.0;
+
+        double y_est;
+        if(!m_siecHistoriaProbek.isEmpty()) {
+            y_est = y_prev;
+            ui->chartWykres1->graph(3)->addData(aktualnyCzas, y_prev);
+        } else {
+            double y_est = warstwaUslug->calculateARX(u);
+            if (std::isnan(y_est) || std::isinf(y_est)) y_est = 0.0;
+        }
 
         m_numerProbki++;
 
@@ -242,6 +260,8 @@ void MainWindow::rysujWykresy(double w, double u, double e, double y, double yEs
     ui->chartWykres4->graph(1)->data()->removeBefore(minX);
     ui->chartWykres4->graph(2)->data()->removeBefore(minX);
 
+    ui->chartWykres1->graph(3)->data()->removeBefore(minX);
+
     // 5. SKALOWANIE OSI Y
     skalujWykres(ui->chartWykres1);
     skalujWykres(ui->chartWykres2);
@@ -297,6 +317,9 @@ void MainWindow::on_btnReset_clicked()
     ui->chartWykres4->graph(0)->data()->clear();
     ui->chartWykres4->graph(1)->data()->clear();
     ui->chartWykres4->graph(2)->data()->clear();
+
+    //
+    ui->chartWykres1->graph(3)->data().clear();
 
     ui->chartWykres1->yAxis->setRange(-1, 1);
     ui->chartWykres2->yAxis->setRange(-1, 1);

@@ -522,7 +522,7 @@ QCustomPlot {
                 </sizepolicy>
                </property>
                <property name="minimum">
-                <number>10</number>
+                <number>1</number>
                </property>
                <property name="maximum">
                 <number>1000</number>
@@ -563,7 +563,7 @@ QCustomPlot {
               </sizepolicy>
              </property>
              <property name="minimum">
-              <number>10</number>
+              <number>1</number>
              </property>
              <property name="maximum">
               <number>50</number>
