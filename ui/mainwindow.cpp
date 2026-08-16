@@ -34,9 +34,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->chartWykres1->addGraph();
     ui->chartWykres1->graph(0)->setPen(QPen(Qt::red));
     ui->chartWykres1->graph(0)->setName("Zadana (w)");
+    ui->chartWykres1->graph(0)->setLineStyle(QCPGraph::lsStepLeft); //wykres schodkowy zamiast plynny
+
     ui->chartWykres1->addGraph();
     ui->chartWykres1->graph(1)->setPen(QPen(Qt::blue));
     ui->chartWykres1->graph(1)->setName("Wyjście (y)");
+    ui->chartWykres1->graph(1)->setLineStyle(QCPGraph::lsStepLeft); //
 
     ui->chartWykres1->addGraph();
     QPen penEst(QColor(7,21,91));
@@ -44,9 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
     penEst.setWidthF(0.75);
     ui->chartWykres1->graph(2)->setPen(penEst);
     ui->chartWykres1->graph(2)->setName("Estymowane wyjście (y)");
+    ui->chartWykres1->graph(2)->setLineStyle(QCPGraph::lsStepLeft); //
     //ui->chartWykres1->legend->setVisible(true);
 
-    //
+    //kolko
     ui->chartWykres1->addGraph();
     ui->chartWykres1->graph(3)->setLineStyle(QCPGraph::lsNone);
     QCPScatterStyle scatterStyle(QCPScatterStyle::ssCircle, Qt::red, 9);
@@ -58,18 +62,26 @@ MainWindow::MainWindow(QWidget *parent)
     setupPlot(ui->chartWykres2, "Uchyb", "e");
     ui->chartWykres2->addGraph();
     ui->chartWykres2->graph(0)->setPen(QPen(Qt::black));
+    ui->chartWykres2->graph(0)->setLineStyle(QCPGraph::lsStepLeft); //
 
     setupPlot(ui->chartwykres3, "Sterowanie", "u");
     ui->chartwykres3->addGraph();
     ui->chartwykres3->graph(0)->setPen(QPen(Qt::darkGreen));
+    ui->chartwykres3->graph(0)->setLineStyle(QCPGraph::lsStepLeft); //
 
     setupPlot(ui->chartWykres4, "Składowe PID", "Wartość");
     ui->chartWykres4->addGraph();
     ui->chartWykres4->graph(0)->setPen(QPen(Qt::red));    ui->chartWykres4->graph(0)->setName("P");
+    ui->chartWykres4->graph(0)->setLineStyle(QCPGraph::lsStepLeft); //
+
     ui->chartWykres4->addGraph();
     ui->chartWykres4->graph(1)->setPen(QPen(Qt::green));  ui->chartWykres4->graph(1)->setName("I");
+    ui->chartWykres4->graph(1)->setLineStyle(QCPGraph::lsStepLeft); //
+
     ui->chartWykres4->addGraph();
     ui->chartWykres4->graph(2)->setPen(QPen(Qt::blue));   ui->chartWykres4->graph(2)->setName("D");
+    ui->chartWykres4->graph(2)->setLineStyle(QCPGraph::lsStepLeft); //
+
     ui->chartWykres4->legend->setVisible(true);
 
 
@@ -122,6 +134,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->lblSiec->clear();
     });
 
+    //suwak siec
+    connect(ui->sldOpoznienieSieci, &QSlider::valueChanged, this, [this](int wartosc){
+        ui->lblSldWart->setText(QString::number(wartosc) + " ms");
+    });
+    ui->lblSldWart->setText(QString::number(ui->sldOpoznienieSieci->value()) + " ms");
 }
 
 
@@ -682,6 +699,19 @@ void MainWindow::ustawBlokadySymulacji(bool czyObiekt)
 
 void MainWindow::on_odebranaRamka(const Ramka &ramka)
 {
+    int opoznienieMs = ui->sldOpoznienieSieci->value();
+
+    if (opoznienieMs > 0) {
+        QTimer::singleShot(opoznienieMs, this, [this, ramka]() {
+            przetworzRamke(ramka);
+        });
+    } else {
+        przetworzRamke(ramka);
+    }
+}
+
+void MainWindow::przetworzRamke(const Ramka &ramka)
+{
     switch(ramka.typ) {
     case TypRamki::DaneSymulacji:
         if(m_czyOstatniTrybLokalny) break;
@@ -689,13 +719,18 @@ void MainWindow::on_odebranaRamka(const Ramka &ramka)
         if(m_czyOstatniObiekt) {
             double u = ramka.u;
             double w = ramka.w;
-            double dt = warstwaUslug->getInterwalSekundy();
+            //double dt = warstwaUslug->getInterwalSekundy();
+
+            //
+            double dt = ramka.interwal / 1000.0;
+            aktualnyCzas = (ramka.numerProbki - 1) * dt;
+            //
 
             double y = warstwaUslug->calculateARX(u);
             if(std::isnan(y) || std::isinf(y)) y = 0.0;
 
             double e = w - y;
-            warstwaUslug->calculatePID(e, dt);
+            warstwaUslug->calculatePID(e, dt); //teoretyczbue mozna usunac
 
             Ramka rOdpDoRegulatora;
             rOdpDoRegulatora.typ = TypRamki::DaneSymulacji;

@@ -72,6 +72,7 @@ private:
     } m_tempStan;
 
     void ustawBlokadySymulacji(bool czyObiekt);
+    void przetworzRamke(const Ramka &ramka);
 protected:
     void resizeEvent(QResizeEvent *event) override;
 };

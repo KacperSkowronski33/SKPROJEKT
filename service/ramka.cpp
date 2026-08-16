@@ -8,6 +8,7 @@ QDataStream &operator<<(QDataStream &out, const Ramka &ramka) //operator do seri
     case TypRamki::DaneSymulacji:
         out << static_cast<qint8>(ramka.aktStan)
             << ramka.numerProbki
+            << ramka.interwal
             << ramka.u
             << ramka.y
             << ramka.w;
@@ -67,6 +68,7 @@ QDataStream &operator>>(QDataStream &in, Ramka &ramka) //operator do deserializa
         qint8 stan;
         in >> stan
             >> ramka.numerProbki
+            >> ramka.interwal
             >> ramka.u
             >> ramka.y
             >> ramka.w;
