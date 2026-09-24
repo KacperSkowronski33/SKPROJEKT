@@ -50,3 +50,10 @@ FORMS += \
     ui/mainwindow.ui \
     ui/ustawieniaarx.ui \
     ui/ustawieniasieci.ui
+
+DISTFILES += \
+    sprawozdanie/Sprawozdanie z projektu SK - symulator UAR.pdf \
+    prezentacje/Projekt SK - spotkanie 1.pdf \
+    prezentacje/Projekt SK - spotkanie 2.pdf \
+    prezentacje/Projekt SK - spotkanie 3.pdf
+    
