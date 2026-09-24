@@ -211,7 +211,7 @@ void MainWindow::aktualizujSymulacje()
             y_est = y_prev;
             ui->chartWykres1->graph(3)->addData(aktualnyCzas, y_prev);
         } else {
-            double y_est = warstwaUslug->calculateARX(u);
+            y_est = warstwaUslug->calculateARX(u); //tu byla znowu zadeklarowana zmienna
             if (std::isnan(y_est) || std::isinf(y_est)) y_est = 0.0;
         }
 
@@ -328,7 +328,7 @@ void MainWindow::on_btnReset_clicked()
     // Czyszczenie danych na wykresach
     ui->chartWykres1->graph(0)->data()->clear();
     ui->chartWykres1->graph(1)->data()->clear();
-    ui->chartWykres1->graph(2)->data().clear();
+    ui->chartWykres1->graph(2)->data()->clear(); //tu byla kropka
     ui->chartWykres2->graph(0)->data()->clear();
     ui->chartwykres3->graph(0)->data()->clear();
     ui->chartWykres4->graph(0)->data()->clear();
@@ -336,7 +336,7 @@ void MainWindow::on_btnReset_clicked()
     ui->chartWykres4->graph(2)->data()->clear();
 
     //
-    ui->chartWykres1->graph(3)->data().clear();
+    ui->chartWykres1->graph(3)->data()->clear(); //tu byla kropka
 
     ui->chartWykres1->yAxis->setRange(-1, 1);
     ui->chartWykres2->yAxis->setRange(-1, 1);
@@ -723,7 +723,7 @@ void MainWindow::przetworzRamke(const Ramka &ramka)
 
             //
             double dt = ramka.interwal / 1000.0;
-            aktualnyCzas = (ramka.numerProbki - 1) * dt;
+            //aktualnyCzas = (ramka.numerProbki - 1) * dt;
             //
 
             double y = warstwaUslug->calculateARX(u);
